@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="white" type="color">#FFFFFF</item>
+    <item name="white_hint" type="color">#88FFFFFF</item>
+    <color name="white_translucent">#33FFFFFF</color>
+    <color name="blue_translucent">#9967839e</color>
+    <item name="header" type="color">#67839e</item>
+    <item name="expandable_item_bg" type="color">#2f3237</item>
+    <item name="expandable_title_text_color" type="color">#50575d</item>
+    <item name="expandable_desc_text_color" type="color">#949fab</item>
+</resources>
