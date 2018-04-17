@@ -55,7 +55,6 @@ public class Presenter {
         return serviceLive;
     }
 
-
     public void onMqttConnectionChanged(String status) {
         currentConnectionStatus = status;
         for (int i = 0; i < observers.size(); i++) {

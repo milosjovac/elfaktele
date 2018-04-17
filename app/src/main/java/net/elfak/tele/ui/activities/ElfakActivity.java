@@ -26,6 +26,7 @@ public class ElfakActivity extends AppCompatActivity {
     private TextView tvConnectionStatus;
     private boolean firstStart = true;
     private RadarView radarView;
+    private AlertDialog alert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,33 +40,7 @@ public class ElfakActivity extends AppCompatActivity {
         tvConnectionStatus = findViewById(R.id.tv_connection_status);
         radarView = findViewById(R.id.radar_view);
         setConnectionStatus(gb.presenter.currentConnectionStatus);
-    }
 
-    private void setConnectionStatus(String status) {
-        tvConnectionStatus.setText(Html.fromHtml("Status MQTT servisa: <b>" + status + "</b>"));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!gb.presenter.isServiceLive() && !firstStart)
-            showServiceNotLiveDialog();
-        firstStart = false;
-    }
-
-
-    protected void onStart() {
-        gb.presenter.addObserver(observer);
-        super.onStart();
-    }
-
-    protected void onStop() {
-        gb.presenter.removeObserver(observer);
-        super.onStop();
-    }
-
-
-    void showServiceNotLiveDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setMessage("Da li želite da startujete MQTT servis?")
@@ -83,8 +58,41 @@ public class ElfakActivity extends AppCompatActivity {
                         finish();
                     }
                 });
-        AlertDialog alert = builder.create();
-        alert.show();
+        alert = builder.create();
+    }
+
+    private void setConnectionStatus(String status) {
+        tvConnectionStatus.setText(Html.fromHtml("Status MQTT servisa: <b>" + status + "</b>"));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!gb.presenter.isServiceLive() && !firstStart) {
+            showServiceNotLiveDialog();
+        } else if (firstStart || !gb.presenter.isServiceLive()) {
+            Intent serviceIntent = new Intent(this, SensorsService.class);
+            serviceIntent.setAction(SensorsService.STARTFOREGROUND_ACTION);
+            startService(serviceIntent);
+        }
+        firstStart = false;
+    }
+
+
+    protected void onStart() {
+        gb.presenter.addObserver(observer);
+        super.onStart();
+    }
+
+    protected void onStop() {
+        gb.presenter.removeObserver(observer);
+        super.onStop();
+    }
+
+
+    void showServiceNotLiveDialog() {
+        if (alert != null && !alert.isShowing())
+            alert.show();
     }
 
     private PresenterObserver observer = new SimplePresenterObserver() {

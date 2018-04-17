@@ -2,13 +2,11 @@ package net.elfak.tele;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.UserManager;
 
 import com.crashlytics.android.Crashlytics;
 
 import net.elfak.tele.data.GlobalBank;
-import net.elfak.tele.services.SensorsService;
 
 import java.lang.reflect.Method;
 
@@ -24,9 +22,6 @@ public class ElfakApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        Intent serviceIntent = new Intent(this, SensorsService.class);
-        serviceIntent.setAction(SensorsService.STARTFOREGROUND_ACTION);
-        startService(serviceIntent);
         GlobalBank.createInstance(getApplicationContext());
         GlobalBank.getInstance().presenter.init();
 
